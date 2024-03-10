@@ -1,0 +1,573 @@
+{% extends "layouts/base.html" %}
+{% block title %} Dashboard {% endblock %} 
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+{% block content %}
+<!-- [ Main Content ] start -->
+<div class="pcoded-main-container">
+	<div class="pcoded-content">
+		<!-- [ Main Content ] start -->
+		<div class="row">
+			<!-- order-card start -->
+			<div class="col-md-6 col-xl-4">
+				<div class="card bg-c-blue order-card">
+					<div class="card-body">
+						<h6 class="text-white">paddy decies Analysis Result</h6>
+						<h2 class="text-end text-white">
+							<i class="feather icon-feather float-start"></i>
+							<span>{{ healthy_paddy_pre | round(2) }}%</span>
+						</h2>
+						<p class="m-b-0">Percentage of healthy paddy leaves <span class="float-end"></span></p>
+						<!-- Replace 351 with dynamic data if needed -->
+					</div>
+				</div>
+			</div>
+			
+			<div class="col-md-6 col-xl-4">
+				<div class="card bg-c-yellow order-card">
+					<div class="card-body">
+						<h6 class="text-white">Paddy Pest</h6>
+						<h2 class="text-end text-white">
+							<i class="feather icon-gitlab float-start"></i>
+							<span> {{ pest_percentage | round(2) }}%</span>
+						</h2>
+						<p class="m-b-0">Percentage of paddy pest detected.<span class="float-end"></span></p>
+						<!-- Replace $5,032 with dynamic data if needed -->
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6 col-xl-4">
+				<div class="card bg-c-red order-card">
+					<div class="card-body">
+						<h6 class="text-white">Paddy Crop Predict</h6>
+						<h2 class="text-end text-white">
+							<i class="feather icon-award float-start"></i>
+							<span>{{ crop_yield_prediction | round(2) }}%</span>
+						</h2>
+						<p class="m-b-0">This Month paddy crop yield prediction<span class="float-end"></span></p>
+						<!-- Replace $542 with dynamic data if needed -->
+					</div>
+				</div>
+			</div>
+			<!-- order-card end -->
+            
+			<!-- paddy -->
+			<div class="col-md-12 col-xl-6">
+				<div class="card">
+					<div class="card-header">
+						<h5>Paddy disease Monitor</h5>
+					</div>
+					<div class="card-body ps-0 pb-0">
+						<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+						<div id="paddy-analysis-chart"></div>
+						<script>
+							// Parse the JSON data from the Flask view
+							var data = JSON.parse('{{ data_json | safe }}');
+							
+							// Define chart options and series using the data
+							var options = {
+							    chart: {
+							        height: 230,
+							        type: 'line',
+							        toolbar: {
+							            show: false,
+							        },
+							    },
+							    dataLabels: {
+							        enabled: false
+							    },
+							    stroke: {
+							        width: 2,
+							        curve: 'smooth'
+							    },
+							  series: [{
+							    name: 'Healthy',
+							    data: data.healthy_counts
+							  }, {
+							    name: 'Unhealthy',
+							    data: data.unhealthy_counts
+							  }],
+							  xaxis: {
+							    
+							    categories: data.dates
+							  },
+							  yaxis: {
+							    show: true,
+							    min: 0,
+							    max: 200,
+							    labels: {
+							        style: {
+							            color: '#ccc'
+							        }
+							    }
+							},
+							colors: ['#73b4ff', '#59e0c5'],
+							fill: {
+							    type: 'gradient',
+							    gradient: {
+							        shade: 'light',
+							        gradientToColors: ['#4099ff', '#2ed8b6'],
+							        shadeIntensity: 0.5,
+							        type: 'horizontal',
+							        opacityFrom: 1,
+							        opacityTo: 1,
+							        stops: [0, 200]
+							    },
+							},
+							markers: {
+							    size: 5,
+							    colors: ['#4099ff', '#2ed8b6'],
+							    opacity: 0.9,
+							    strokeWidth: 2,
+							    hover: {
+							        size: 7,
+							    }
+							},
+							grid: {
+							    borderColor: '#cccccc3b',
+							}
+							
+							  // ... Other chart options ...
+							};
+							
+							// Initialize and render the chart
+							var chart = new ApexCharts(document.querySelector("#paddy-analysis-chart"), options);
+							chart.render();
+						</script>
+					</div>
+					
+				</div>
+			</div>
+			<div class="col-md-12 col-lg-6">
+				<div class="card bg-gradient">
+					<div class="card-header">
+						<h5>Paddy disease Monitor</h5>
+					</div>
+					<div class="card-body ps-0 pb-0">
+						<div id="paddy-disease-chart"></div>
+					</div>
+				</div>
+			</div>
+			<!-- Include ApexCharts library -->
+			<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+			<script>
+				// Parse the JSON data from the Flask view
+				var diseaseData = JSON.parse('{{ data_paddy_pi_json | safe }}');
+			
+				// Define chart options and series using the data
+				var options = {
+					chart: {
+						height: 320,
+						type: 'donut',
+					},
+					series: diseaseData.series_data,
+					labels: diseaseData.labels,
+					colors: ["#4099ff", "#0e9e4a", "#00bcd4", "#FFB64D", "#FF5370"],
+					fill: {
+						type: 'gradient',
+						gradient: {
+							shade: 'light',
+							inverseColors: true,
+						}
+					},
+					legend: {
+						show: true,
+						position: 'bottom',
+					},
+					plotOptions: {
+						pie: {
+							donut: {
+								labels: {
+									show: true,
+									name: {
+										show: true
+									},
+									value: {
+										show: true
+									}
+								}
+							}
+						}
+					},
+					dataLabels: {
+						enabled: true,
+						dropShadow: {
+							enabled: false,
+						}
+					},
+					responsive: [{
+						breakpoint: 480,
+						options: {
+							legend: {
+								position: 'bottom'
+							}
+						}
+					}]
+				};
+			
+				// Initialize and render the chart
+				var chart = new ApexCharts(document.querySelector("#paddy-disease-chart"), options);
+				chart.render();
+			</script>
+			
+			<div class="col-md-12 col-lg-6">
+				<div class="card">
+					<div class="card-header">
+						<h5>Paddy pest Monitor</h5>
+					</div>
+					<div class="card-body">
+						<!-- Chart container -->
+						<div id="paddy-pest-analysis-chart"></div>
+					</div>
+				</div>
+			
+			    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+			    <script>
+				// Parse the JSON data from the Flask view
+				var data = JSON.parse('{{ data_pest_json | safe }}');
+				
+				// Define chart options and series using the data
+				var options = {
+				  chart: {
+				    height: 230,
+				    type: 'line',
+				    toolbar: {
+				      show: false,
+				    },
+				  },
+				  dataLabels: {
+				    enabled: false
+				  },
+				  stroke: {
+				    width: 2,
+				    curve: 'smooth'
+				  },
+				  series: [{
+				    name: 'Without Pest',
+				    data: data.without_pest_count
+				  }, {
+				    name: 'With Pest',
+				    data: data.with_pest_count
+				  }],
+				  legend: {
+				    position: 'top'
+				  },
+				  xaxis: {
+				    categories: data.dates,
+				    axisBorder: {
+				      show: false,
+				    },
+				    labels: {
+				      style: {
+				        color: '#ccc'
+				      }
+				    }
+				  },
+				  yaxis: {
+				    show: true,
+				    min: 0,
+				    max: 200,
+				    labels: {
+				        style: {
+				            color: '#ccc'
+				        }
+				    }
+				},
+				colors: ['#73b4ff', '#59e0c5'],
+				fill: {
+				    type: 'gradient',
+				    gradient: {
+				        shade: 'light',
+				        gradientToColors: ['#4099ff', '#2ed8b6'],
+				        shadeIntensity: 0.5,
+				        type: 'horizontal',
+				        opacityFrom: 1,
+				        opacityTo: 1,
+				        stops: [0, 200]
+				    },
+				},
+				markers: {
+				    size: 5,
+				    colors: ['#4099ff', '#2ed8b6'],
+				    opacity: 0.9,
+				    strokeWidth: 2,
+				    hover: {
+				        size: 7,
+				    }
+				},
+				grid: {
+				    borderColor: '#cccccc3b',
+				}
+				
+				};
+				
+				var chart = new ApexCharts(document.querySelector("#paddy-pest-analysis-chart"), options);
+				chart.render();
+			  </script>
+			</div>
+
+			<div class="col-md-12 col-lg-6">
+				<div class="card">
+					<div class="card-header">
+						<h5>Paddy pest Monitor</h5>
+					</div>
+					<div class="card-body ps-0 pb-0">
+						<div id="paddy-pest-chart"></div>
+					</div>
+				</div>
+			</div>
+			<!-- Include ApexCharts library -->
+			<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+			<script>
+				// Parse the JSON data from the Flask view
+				var diseaseData = JSON.parse('{{ data_paddy_pest_pi_json  | safe }}');
+			
+				// Define chart options and series using the data
+				var options = {
+					chart: {
+						height: 320,
+						type: 'donut',
+					},
+					series: diseaseData.series_data,
+					labels: diseaseData.labels,
+					colors: ["#4099ff", "#0e9e4a", "#00bcd4", "#FFB64D", "#FF5370"],
+					fill: {
+						type: 'gradient',
+						gradient: {
+							shade: 'light',
+							inverseColors: true,
+						}
+					},
+					legend: {
+						show: true,
+						position: 'bottom',
+					},
+					plotOptions: {
+						pie: {
+							donut: {
+								labels: {
+									show: true,
+									name: {
+										show: true
+									},
+									value: {
+										show: true
+									}
+								}
+							}
+						}
+					},
+					dataLabels: {
+						enabled: true,
+						dropShadow: {
+							enabled: false,
+						}
+					},
+					responsive: [{
+						breakpoint: 480,
+						options: {
+							legend: {
+								position: 'bottom'
+							}
+						}
+					}]
+				};
+			
+				// Initialize and render the chart
+				var chart = new ApexCharts(document.querySelector("#paddy-pest-chart"), options);
+				chart.render();
+			</script>
+			
+			<div class="col-md-6 col-xl-12">
+				<div class="card bg-c-green order-card">
+					<div class="card-body">
+						<h6 class="text-white">Tea Analysis Result</h6>
+						<h2 class="text-end text-white">
+							<i class="feather icon-feather float-start"></i>
+							<span>{{ card_data | round(2) }}%</span>
+						</h2>
+						<p class="m-b-0">Percentage of healthy tea leaves detected.</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-12">
+				<div class="card">
+					<div class="card-header">
+						<h5>Tea Monitor</h5>
+					</div>
+					<div class="card-body ps-0 pb-0">
+						<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+						<div id="tea-analysis-chart"></div>
+						<script>
+							// Parse the JSON data from the Flask view
+							var data = JSON.parse('{{ data_tea_json | safe }}');
+							
+							// Define chart options and series using the data
+							var options = {
+							    chart: {
+							        height: 230,
+							        type: 'line',
+							        toolbar: {
+							            show: false,
+							        },
+							    },
+							    dataLabels: {
+							        enabled: false
+							    },
+							    stroke: {
+							        width: 2,
+							        curve: 'smooth'
+							    },
+							  series: [{
+							    name: 'Healthy',
+							    data: data.healthy_counts
+							  }, {
+							    name: 'Unhealthy',
+							    data: data.unhealthy_counts
+							  }],
+							  xaxis: {
+							    
+							    categories: data.dates
+							  },
+							  yaxis: {
+							    show: true,
+							    min: 0,
+							    max: 100,
+							    labels: {
+							        style: {
+							            color: '#ccc'
+							        }
+							    }
+							},
+							colors: ['#73b4ff', '#59e0c5'],
+							fill: {
+							    type: 'gradient',
+							    gradient: {
+							        shade: 'light',
+							        gradientToColors: ['#4099ff', '#2ed8b6'],
+							        shadeIntensity: 0.5,
+							        type: 'horizontal',
+							        opacityFrom: 1,
+							        opacityTo: 1,
+							        stops: [0, 100]
+							    },
+							},
+							markers: {
+							    size: 5,
+							    colors: ['#4099ff', '#2ed8b6'],
+							    opacity: 0.9,
+							    strokeWidth: 2,
+							    hover: {
+							        size: 7,
+							    }
+							},
+							grid: {
+							    borderColor: '#cccccc3b',
+							}
+							
+							  // ... Other chart options ...
+							};
+							
+							// Initialize and render the chart
+							var chart = new ApexCharts(document.querySelector("#tea-analysis-chart"), options);
+							chart.render();
+						</script>
+					</div>
+				</div>
+			</div>
+			
+			<div class="col-md-12 col-lg-12">
+				<div class="card">
+					<div class="card-header">
+						<h5>Tea disease Monitor</h5>
+					</div>
+					<div class="card-body ps-0 pb-0">
+						<div id="tea-disease-chart"></div>
+					</div>
+				</div>
+			</div>
+			<!-- Include ApexCharts library -->
+			<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+			<script>
+				// Parse the JSON data from the Flask view
+				var diseaseData = JSON.parse('{{ data_tea_pi_json | safe }}');
+			
+				// Define chart options and series using the data
+				var options = {
+					chart: {
+						height: 320,
+						type: 'donut',
+					},
+					series: diseaseData.series_data,
+					labels: diseaseData.labels,
+					colors: ["#4099ff", "#0e9e4a", "#00bcd4", "#FFB64D", "#FF5370"],
+					fill: {
+						type: 'gradient',
+						gradient: {
+							shade: 'light',
+							inverseColors: true,
+						}
+					},
+					legend: {
+						show: true,
+						position: 'bottom',
+					},
+					plotOptions: {
+						pie: {
+							donut: {
+								labels: {
+									show: true,
+									name: {
+										show: true
+									},
+									value: {
+										show: true
+									}
+								}
+							}
+						}
+					},
+					dataLabels: {
+						enabled: true,
+						dropShadow: {
+							enabled: false,
+						}
+					},
+					responsive: [{
+						breakpoint: 480,
+						options: {
+							legend: {
+								position: 'bottom'
+							}
+						}
+					}]
+				};
+			
+				// Initialize and render the chart
+				var chart = new ApexCharts(document.querySelector("#tea-disease-chart"), options);
+				chart.render();
+			</script>
+			
+
+
+
+		</div>
+		
+        
+
+	</div>
+</div>
+<!-- Customer overview end -->
+</div>
+<!-- [ Main Content ] end -->
+</div>
+</div>
+<!-- [ Main Content ] end -->
+{% endblock content %}
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<!-- Apex Chart -->
+<script src="/static/assets/js/plugins/apexcharts.min.js"></script>
+<!-- custom-chart js -->
+<script src="/static/assets/js/pages/dashboard-main.js"></script>
+{% endblock javascripts %}

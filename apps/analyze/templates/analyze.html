@@ -1,0 +1,133 @@
+<!-- apps/upload/templates/upload.html -->
+{% extends "layouts/base.html" %}
+
+{% block title %} Dashboard {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<style>
+    /* Custom styles for this template */
+    .form-container {
+        margin-top: 100px; /* Adjust margin-top to center the form vertically */
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .form-container select,
+    .form-container button {
+        margin-top: 10px;
+    }
+    #message-div {
+        padding: 50px; /* Add padding to the success message */
+    }
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <div class="form-container">
+                <h1 class="text-center mb-4">Analysis</h1>
+                <form id="analysis-form" method="POST">
+                    <div class="form-group">
+                        <label for="selected_folder">Select Folder:</label>
+                        <select name="selected_folder" id="selected_folder" class="form-control">
+                            {% for folder in folders %}
+                                <option value="{{ folder }}">{{ folder }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="analysis_mode">Select Analysis Mode:</label>
+                        <select name="analysis_mode" id="analysis_mode" class="form-control">
+                            <option value="tea">Tea Analysis</option>
+                            <option value="paddy_decies">Paddy Decies Analysis</option>
+                            <option value="paddy_pest">Paddy Pest Analysis</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                </form>
+                <div id="progress-div" style="display: none;">
+                    <div class="progress mt-4">
+                        <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div id="message-div" class="alert alert-info" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New card for "Done" message -->
+    <div class="row justify-content-center mt-4" id="done-card" style="display: none;">
+        <div class="col-lg-6 col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Analysis Completed</h5>
+                    <p class="card-text">Your analysis has been completed successfully.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- jQuery and Bootstrap JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $("#analysis-form").submit(function(event) {
+            event.preventDefault(); // Prevent form submission
+            var form = $(this);
+            var url = form.attr("action");
+
+            // Show progress bar
+            $("#progress-div").show();
+
+            // AJAX request to submit form data
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: form.serialize(),
+                success: function(data) {
+                    // Hide progress bar after successful analysis
+                    $("#progress-div").hide();
+
+                    // Show completion message
+                    $("#message-div").show();
+                    // Add celebration animation
+                    setTimeout(function() {
+                        $("#message-div").addClass("celebration");
+                    }, 1000);
+
+                    // Show "Done" card
+                    $("#done-card").show();
+                },
+                error: function(xhr, textStatus, errorThrown) {
+                    // Hide progress bar on error
+                    $("#progress-div").hide();
+                    alert("Error: " + errorThrown);
+                },
+                xhr: function() {
+                    var xhr = new window.XMLHttpRequest();
+                    // Listen to the progress event to update the progress bar
+                    xhr.upload.addEventListener("progress", function(evt) {
+                        if (evt.lengthComputable) {
+                            var percentComplete = (evt.loaded / evt.total) * 100;
+                            $("#progress-bar").width(percentComplete + "%");
+                            $("#progress-bar").attr("aria-valuenow", percentComplete);
+                        }
+                    }, false);
+                    return xhr;
+                }
+            });
+        });
+    });
+</script>
+
+{% endblock content %}
+
