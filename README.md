@@ -3,12 +3,18 @@
 Our project aims to develop a comprehensive, fully automated outdoor farm management and analysis system tailored for agricultural operations. With a focus on continual improvement and future development, our objectives are to modernize agriculture practices and maximize crop yields while ensuring sustainability and efficiency.
 
 Key Features:
-
+<br />
 -Pest and Disease Detection: Our system includes advanced algorithms for detecting pests and diseases affecting paddy and tea crops, enabling timely intervention and mitigation.
--Automation: Through the integration of cutting-edge technologies such as sensors, drones, and satellite imaging, our system automates various tasks including irrigation, fertilization, and pest control, reducing reliance on manual labor and improving efficiency.
+<br />
+-Automation: Through the integration of cutting-edge technologies such as sensors, drones, and satellite imaging, our system automates various tasks including irrigation, 
+fertilization, and pest control, reducing reliance on manual labor and improving efficiency.
+<br />
 -Data Analysis: We employ sophisticated data analytics techniques to analyze information collected from multiple sources, providing insights into crop health, environmental conditions, and resource management.
+<br />
 -Scalability: Designed with scalability in mind, our system is adaptable to different farm sizes and types, allowing for seamless expansion and integration of additional features in the future.
+<br />
 -Sustainability: By promoting sustainable farming practices and optimizing resource utilization, our system contributes to environmental conservation and long-term agricultural viability.
+<br />
 -User-Friendly Interface: We prioritize usability and accessibility, offering an intuitive interface that enables farmers to easily monitor and manage their crops, make data-driven decisions, and track performance metrics.
 
 <br />
