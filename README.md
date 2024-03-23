@@ -12,9 +12,10 @@ This application utilizes machine learning to analyze images of paddy and tea pl
 ## Technologies Used
 
 - **Deep Learning:** TensorFlow, PyTorch
-- **Object Detection Model:YOLOv5, SSD
+- **Object Detection Model:**YOLOv5, SSD
 - **Image Processing Libraries:** Pillow
-<br />
+
+
 ```bash
 $ git clone git@github.com:Nawanjane/agroAi.git
 $ cd agroAi
